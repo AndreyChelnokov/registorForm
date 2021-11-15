@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Merriweather+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="./style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
+    <title>VUE FormCreateUser</title>
+</head>
+<body>
+    
+    <div class="page">
+        <div class="container">
+            <div id="form" class="form">
+                <div class="form__title">Регистрация</div>
+                <div class="form__descr">Уже есть аккаунт? <a href="#" class="link">Войти</a></div>
+
+                <form action="" class="form__filds">
+
+                    <div class="form__fild-wrap">
+                        <div class="form__fild-name">{{ defaultValues.name.title }}</div>
+                        <div class="form__fild-input-wrap">
+                            <input @input="isFilds" type="text" class="form__fild-input" v-model="values.name" :placeholder="defaultValues.name.placeholder">
+                        </div>
+                        <div class="form__fild-error-mes">
+                            Введено не корректное значение
+                        </div>
+                    </div>
+
+                    <div class="form__fild-wrap">
+                        <div class="form__fild-name">{{ defaultValues.email.title }}</div>
+                        <div class="form__fild-input-wrap">
+                            <input @input="isFilds" type="text" class="form__fild-input"  v-model="values.email" :placeholder="defaultValues.email.placeholder">
+                        </div>
+                        <div class="form__fild-error-mes">
+                            Введено не корректное значение
+                        </div>
+                    </div>
+
+                    <div class="form__fild-wrap">
+                        <div class="form__fild-name">{{ defaultValues.phone.title }}</div>
+                        <div class="form__fild-input-wrap">
+                            <input @input="isFilds" type="text" class="form__fild-input"  v-model="values.phone" :placeholder="defaultValues.phone.placeholder">
+                        </div>
+                        <div class="form__fild-error-mes">
+                            Введено не корректное значение
+                        </div>
+                    </div>
+
+
+                    
+                    <div class="form__fild-wrap">
+                        <div class="form__fild-name">{{ defaultValues.lang.title }}</div>
+                        <div class="form__fild-input-wrap select">
+                            <div @click="defaultValues.lang.select = !defaultValues.lang.select" class="form__fild-input form__fild-select form__fild-select select-btn">
+                                <span>{{ defaultValues.lang.value }}</span>
+                                <img src="./arr.svg" alt="">
+                            </div>
+                            <div @click.event="getLang" v-if="defaultValues.lang.select" class="select__modal">
+                                <div v-for="item in defaultValues.lang.items" :data-modal-item-value="item" class="select__modal-item">
+                                    {{ item }}
+                                  </div>
+                            </div>
+                        </div>
+                        <div class="form__fild-error-mes">
+                            Введено не корректное значение
+                        </div>
+                    </div>
+
+
+                    <div class="form__fild-wrap">
+                        <div class="form__fild-input-wrap">
+                            <label 
+                                class="checkbox__wrap form__fild-checkbox">
+                                <input 
+                                    type="checkbox" 
+                                    class="checkbox__wrap-input form__fild-input-checkbox"
+                                >
+                                <span 
+                                    @click="isCondition"
+                                    :class="values.condition ? 'checkbox__wrap-input_active' : ''" 
+                                    class="checkbox__wrap-text form__fild-checkbox-text"
+                                >Принимаю <a href="#" class="link">условия</a> использования</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <button :class="values.isSubmit ? '' : 'btn__disable'" class="btn form__btn">
+                        Зарегистрироваться
+                    </button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var app = new Vue({
+            el: '#form',
+            data: {
+                defaultValues: {
+                    name: {
+                        title: 'Имя',
+                        placeholder: 'Введите Ваше имя'
+                    },
+                    email: {
+                        title: 'Еmail',
+                        placeholder: 'Введите ваш email'
+                    },
+                    phone: {
+                        title: 'Номер телефона',
+                        placeholder: 'Введите номер телефона'
+                    },
+                    lang: {
+                        title: 'Язык',
+                        select: false,
+                        items: ['Русский', 'Английский', 'Китайский', 'Испанский'],
+                        value: 'Язык'
+                    } 
+                },
+                values: {
+                    name: '',
+                    email: '',
+                    phone: '',
+                    lang: '',
+                    condition: false,
+                    isSubmit: false
+                }
+            },
+            methods: {
+                isCondition: function() {
+                    this.values.condition = !this.values.condition
+                    this.isFilds()
+                },
+                getLang: function(event) {
+                    if (event.target.classList.contains('select__modal-item')) {
+                        const clickValue = event.target.getAttribute('data-modal-item-value')
+                        this.defaultValues.lang.value = clickValue;
+                        this.values.lang = clickValue;
+
+                        this.defaultValues.lang.select = false;
+
+                        this.isFilds();
+                    }
+                    
+                },
+                isFilds: function() {
+                    if (this.values.name != '' && this.values.email != '' && this.values.phone != '' && this.values.lang != '' & this.values.condition != false) {
+                        this.values.isSubmit = true;
+                    } else {
+                        this.values.isSubmit = false
+                    }
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
